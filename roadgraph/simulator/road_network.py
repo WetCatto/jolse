@@ -1,4 +1,5 @@
 from .config import RoadNetworkDefault
+from .traffic_light import TrafficLight
 from .vehicle import Vehicle
 
 import networkx as nx
@@ -55,6 +56,10 @@ class RoadNetwork:
         if lane_index < 0 or lane_index >= road['num_lanes']: 
             raise ValueError('Lane is non-existent')
         road['vehicles'][lane_index].append(vehicle)
+    
+    def add_traffic_light(self, traffic_light: TrafficLight) -> None:
+        """Adds a traffic light in a given node."""
+        self.graph.nodes[traffic_light.intersection_id]['traffic_light'] = traffic_light
 
     def get_road(self, start_node_id: int, end_node_id: int) -> dict: 
         """

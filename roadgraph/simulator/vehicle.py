@@ -1,4 +1,4 @@
-from .config import VehicleDefault
+from .config import IDMDefault, VehicleDefault
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -13,7 +13,8 @@ class Vehicle:
                  max_speed = VehicleDefault.MAX_SPEED, 
                  desired_speed_factor = VehicleDefault.DESIRED_SPEED_FACTOR, 
                  max_acceleration = VehicleDefault.MAX_ACCELERATION, 
-                 max_deceleration = VehicleDefault.MAX_DECELERATION, 
+                 max_deceleration = VehicleDefault.MAX_DECELERATION,
+                 time_headway = IDMDefault.TIME_HEADWAY, 
                  min_gap = VehicleDefault.MIN_GAP):
         """Constructs a vehicle on the given road and lane."""
         self.vehicle_id = vehicle_id
@@ -21,6 +22,7 @@ class Vehicle:
         self.max_speed = max_speed
         self.max_acceleration = max_acceleration
         self.max_deceleration = max_deceleration
+        self.time_headway = time_headway
         self.min_gap = min_gap
         
         # Position and Routing
@@ -44,7 +46,7 @@ class Vehicle:
     def update(self, dt: float) -> None:
         """Updates the vehicle's state on a given time step."""
         # Threshold considered to be stopping speed
-        stop_threshold = 0.2
+        stop_threshold = VehicleDefault.STOP_THRESHOLD
         
         # Update physics
         self.speed += self.acceleration * dt 
@@ -53,7 +55,7 @@ class Vehicle:
 
         # Update metrics
         if self.speed < 1: self.total_wait_time += dt 
-        if self.previous_speed > stop_threshold and self.speed <= stop_threshold: 
+        if self.previous_speed > stop_threshold and self.speed <= stop_threshold:
             self.total_stops += 1
         self.time_alive += dt
 

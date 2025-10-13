@@ -38,6 +38,7 @@ class VehicleDefault:
     MAX_DECELERATION = 5.0
 
     MIN_GAP = 2.0
+    STOP_THRESHOLD = 0.2
 
     INTERSECTION_DETECTION_DISTANCE = 20
 
@@ -48,6 +49,7 @@ class VehicleDefault:
 class SimulationDefault:
     TIME_STEP = 0.1
     STOP_LINE_OFFSET = 2.0
+    MIN_CLEARANCE = 15.0
 
 # ============================================================================ #
 # Intelligent Driver Model (IDM) Parameters                                    #

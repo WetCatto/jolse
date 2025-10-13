@@ -37,6 +37,8 @@
           pkgs.python313.pkgs.seaborn
           pkgs.python313.pkgs.matplotlib
           pkgs.python313.pkgs.pygame
+	  pkgs.python313.pkgs.pillow
+	  pkgs.python313.pkgs.ipympl
         ];
       };
     };
