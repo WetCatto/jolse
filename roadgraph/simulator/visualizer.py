@@ -148,9 +148,8 @@ class SimulationVisualizer:
             self._draw_stats()
         
         # Refresh display
-        self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
-        plt.pause(0.001)  # Small pause to update display
+        self.fig.canvas.draw_idle()
+        plt.close('all')
     
     def _draw_traffic_lights(self):
         """Update traffic light colors"""
