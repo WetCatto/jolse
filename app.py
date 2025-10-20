@@ -1,10 +1,14 @@
 import streamlit as st
-import matplotlib
-matplotlib.use('Agg')  # Required for Streamlit Cloud
-import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
 import time
+
+# Configure matplotlib for Streamlit Cloud
+import matplotlib
+matplotlib.use('agg')  # Must be before importing pyplot
+import matplotlib.pyplot as plt
+plt.ioff()  # Turn off interactive mode
+
 from roadgraph.simulator import *
 
 def create_road_network(junction_radius, road_length, num_lanes=2):
