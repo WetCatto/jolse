@@ -1,7 +1,11 @@
 import streamlit as st
+import matplotlib
+matplotlib.use('Agg')  # Required for Streamlit Cloud
 import matplotlib.pyplot as plt
-from roadgraph.simulator import *
+import numpy as np
+import networkx as nx
 import time
+from roadgraph.simulator import *
 
 def create_road_network(junction_radius, road_length, num_lanes=2):
     network = RoadNetwork()
@@ -135,14 +139,16 @@ def main():
     current_phase = 0
     last_phase_change = 0
     last_update = time.time()
+    update_interval = 0.1  # 10 steps per second
+    viz_update_count = 0
     
     try:
         while st.session_state.running:
             current_time = time.time()
             
-            # Only update if 1 second has passed
-            if current_time - last_update >= 1.0:
-                # Check if it's time to change traffic light phase
+            # Update at 10Hz
+            if current_time - last_update >= update_interval:
+                # Check traffic light phase
                 if sim.time - last_phase_change >= traffic_light_duration:
                     next_phase = (current_phase + 1) % 2
                     light.request_phase_change(next_phase)
@@ -152,22 +158,20 @@ def main():
                 # Update simulation
                 sim.step()
                 
-                # Update visualization
-                viz.render(show_stats=True)
-                viz_placeholder.pyplot(viz.fig, clear_figure=False)
-                
-                # Update statistics
-                with stats_col1:
-                    st.metric("Active Vehicles", len(sim.vehicles))
-                with stats_col2:
-                    st.metric("Completed Trips", len(sim.completed_vehicles))
-                with stats_col3:
-                    st.metric("Current Time", f"{sim.time:.1f}s")
+                # Update visualization every 2 steps (5 FPS)
+                viz_update_count += 1
+                if viz_update_count % 2 == 0:
+                    viz.render(show_stats=False)
+                    viz_placeholder.pyplot(viz.fig)
+                    
+                    # Update statistics
+                    stats_col1.metric("Vehicles", len(sim.vehicles))
+                    stats_col2.metric("Completed", len(sim.completed_vehicles))
+                    stats_col3.metric("Time", f"{sim.time:.1f}s")
                 
                 last_update = current_time
             else:
-                # Small sleep to prevent CPU overload
-                time.sleep(0.1)
+                time.sleep(0.01)  # Small sleep to prevent CPU overload
             
     except Exception as e:
         st.error(f"Simulation error: {str(e)}")
